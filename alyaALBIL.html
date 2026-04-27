@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Maison Kost</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f6f1eb;
+}
+
+/* HEADER */
+header {
+    background: #4e342e;
+    color: #fbe9e7;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+header button {
+    width: auto;
+}
+
+header h1 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+}
+
+/* LOGIN */
+.login-bg {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2');
+    background-size: cover;
+    animation: bgMove 20s infinite alternate;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes bgMove {
+    0% { background-position: center; }
+    100% { background-position: top; }
+}
+
+.login-box {
+    width: 320px;
+    background: rgba(255,255,255,0.95);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #6d4c41;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* HERO */
+.hero {
+    background: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2') center/cover;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+/* GRID */
+.grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.card {
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 12px rgba(0,0,0,0.1);
+}
+.card img {
+    width:100%;
+    height:150px;
+    object-fit:cover;
+}
+.card-body { padding:15px; }
+
+.label {
+    font-size:12px;
+    padding:3px 8px;
+    border-radius:6px;
+}
+.putri { background:#f8bbd0; }
+.putra { background:#bbdefb; }
+
+.badge {
+    font-size:11px;
+    padding:3px 6px;
+    border-radius:5px;
+    margin-left:5px;
+}
+.best { background:#ffe082; }
+.laris { background:#ffab91; }
+
+.price {
+    color:#8d6e63;
+    font-weight:500;
+}
+
+/* SECTION (FIX SPACING PAS) */
+.section {
+    display:none;
+    padding-top:20px;
+}
+.active { display:block; }
+
+/* BOX */
+.center {
+    max-width:500px;
+    margin:20px auto;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+}
+
+/* PAYMENT */
+.pay-card {
+    background:#efebe9;
+    padding:12px;
+    margin:8px 0;
+    border-radius:10px;
+    cursor:pointer;
+}
+.pay-card.active {
+    background:#6d4c41;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login-bg">
+    <div class="login-box">
+        <h2>Maison Kost</h2>
+        <input type="text" id="user" placeholder="Nama">
+        <input type="password" id="pass" placeholder="Password">
+        <button onclick="login()">Masuk</button>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" style="display:none;">
+
+<header>
+    <button onclick="logout()">Logout</button>
+    <h1>🤎 Maison Kost</h1>
+</header>
+
+<div class="hero">Cari Kost Nyaman & Modern 🤎</div>
+
+<!-- PAKET -->
+<div class="section active">
+    <div class="grid" id="paketList"></div>
+</div>
+
+<!-- DETAIL -->
+<div class="section" id="detail">
+    <div class="center">
+        <img id="detailImg" style="width:100%;border-radius:10px;">
+        <h2 id="detailNama"></h2>
+        <p id="detailFasilitas" style="background:#efebe9;padding:10px;border-radius:8px;"></p>
+        <button onclick="next('booking')">Lanjut Booking</button>
+    </div>
+</div>
+
+<!-- BOOKING -->
+<div class="section" id="booking">
+    <div class="center">
+        <h2>Data Booking</h2>
+
+        <label>Nama Penyewa</label>
+        <input type="text" id="nama" placeholder="Masukkan nama">
+
+        <label>Tanggal Masuk</label>
+        <input type="date" id="tanggal">
+
+        <button onclick="next('pembayaran')">Lanjut Pembayaran</button>
+    </div>
+</div>
+
+<!-- PEMBAYARAN -->
+<div class="section" id="pembayaran">
+    <div class="center">
+
+        <div class="pay-card" onclick="pilihMetode(event,'Transfer Bank')">🏦 Transfer Bank</div>
+        <div id="bankSelect" style="display:none;">
+            <select id="bank">
+                <option>BCA</option><option>BRI</option><option>Mandiri</option>
+            </select>
+        </div>
+
+        <div class="pay-card" onclick="pilihMetode(event,'E-Wallet')">📱 E-Wallet</div>
+        <div id="ewalletSelect" style="display:none;">
+            <select id="ewallet">
+                <option>OVO</option><option>Dana</option><option>GoPay</option>
+            </select>
+        </div>
+
+        <div class="pay-card" onclick="pilihMetode(event,'Cash')">💵 Cash</div>
+
+        <button onclick="proses()">Bayar</button>
+    </div>
+</div>
+
+<!-- TRANSAKSI -->
+<div class="section" id="transaksi">
+    <div class="center">
+        <h2 style="text-align:center;">✅ Pembayaran Berhasil</h2>
+
+        <div style="background:#efebe9;padding:15px;border-radius:10px;margin:15px 0;text-align:left;">
+            <p id="output"></p>
+        </div>
+
+        <button onclick="location.reload()">Kembali ke Home</button>
+    </div>
+</div>
+
+</div>
+
+<script>
+// FORMAT RUPIAH
+function formatRupiah(angka){
+return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// LOGIN
+function login(){
+let nama = document.getElementById("user").value;
+let password = document.getElementById("pass").value;
+
+if(nama===""||password===""){
+alert("Isi nama & password!");
+return;
+}
+
+localStorage.setItem("user",nama);
+showMain();
+}
+
+function showMain(){
+document.getElementById("loginPage").style.display="none";
+document.getElementById("main").style.display="block";
+}
+
+function logout(){
+localStorage.removeItem("user");
+location.reload();
+}
+
+if(localStorage.getItem("user")) showMain();
+
+// DATA
+const paket = [
+{nama:"Hemat Putri",label:"putri",harga:500000,fasilitas:"Kasur, Lemari, WiFi",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"},
+{nama:"Hemat Putra",label:"putra",harga:500000,fasilitas:"Kasur, Lemari, WiFi",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"},
+{nama:"Nyaman Putri",label:"putri",harga:800000,fasilitas:"AC, Lemari, WiFi",img:"https://images.unsplash.com/photo-1560448075-bb485b067938"},
+{nama:"Nyaman Putra",label:"putra",harga:800000,fasilitas:"AC, Lemari, WiFi",img:"https://images.unsplash.com/photo-1560448075-bb485b067938"},
+{nama:"Premium Putri",label:"putri",harga:1200000,fasilitas:"AC, TV, KM Dalam, WiFi",img:"https://images.unsplash.com/photo-1560185007-c5ca9d2c014d",badge:"best"},
+{nama:"Premium Putra",label:"putra",harga:1200000,fasilitas:"AC, TV, KM Dalam, WiFi",img:"https://images.unsplash.com/photo-1560185007-c5ca9d2c014d"},
+{nama:"Sultan Putri",label:"putri",harga:1500000,fasilitas:"AC, TV, KM Dalam, WiFi, Dapur, Kulkas",img:"https://images.unsplash.com/photo-1560448204-603b3fc33ddc",badge:"laris"},
+{nama:"Sultan Putra",label:"putra",harga:1500000,fasilitas:"AC, TV, KM Dalam, WiFi, Dapur, Kulkas",img:"https://images.unsplash.com/photo-1560448204-603b3fc33ddc"}
+];
+
+let pilih={}, metodeDipilih="";
+
+// TAMPIL
+function tampilPaket(){
+let html="";
+paket.forEach((p,i)=>{
+html+=`
+<div class="card">
+<img src="${p.img}">
+<div class="card-body">
+<span class="label ${p.label}">${p.label}</span>
+${p.badge=="best" ? '<span class="badge best">⭐ Best</span>' : ''}
+${p.badge=="laris" ? '<span class="badge laris">🔥 Terlaris</span>' : ''}
+<h3>${p.nama}</h3>
+<p class="price">${formatRupiah(p.harga)}</p>
+<button onclick="detail(${i})">Lihat Detail</button>
+</div></div>`;
+});
+document.getElementById("paketList").innerHTML=html;
+}
+
+// NAVIGASI
+function next(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+// DETAIL
+function detail(i){
+pilih=paket[i];
+document.getElementById("detailNama").innerText=pilih.nama;
+document.getElementById("detailFasilitas").innerText=pilih.fasilitas;
+document.getElementById("detailImg").src=pilih.img;
+next("detail");
+}
+
+// METODE
+function pilihMetode(e,m){
+metodeDipilih=m;
+document.querySelectorAll(".pay-card").forEach(c=>c.classList.remove("active"));
+e.currentTarget.classList.add("active");
+
+document.getElementById("bankSelect").style.display="none";
+document.getElementById("ewalletSelect").style.display="none";
+
+if(m==="Transfer Bank") document.getElementById("bankSelect").style.display="block";
+if(m==="E-Wallet") document.getElementById("ewalletSelect").style.display="block";
+}
+
+// PROSES
+function proses(){
+let namaUser = document.getElementById("nama").value;
+
+if(namaUser==="" || metodeDipilih===""){
+alert("Lengkapi data dulu!");
+return;
+}
+
+let hasil = `
+<b>Nama:</b> ${namaUser}<br>
+<b>Paket:</b> ${pilih.nama}<br>
+<b>Harga:</b> ${formatRupiah(pilih.harga)}<br>
+<b>Metode:</b> ${metodeDipilih}<br>
+`;
+
+if(metodeDipilih==="Transfer Bank"){
+hasil += "<b>Bank:</b> "+document.getElementById("bank").value;
+}
+if(metodeDipilih==="E-Wallet"){
+hasil += "<b>E-Wallet:</b> "+document.getElementById("ewallet").value;
+}
+
+document.getElementById("output").innerHTML=hasil;
+
+alert("Pembayaran berhasil! 🎉");
+
+next("transaksi");
+}
+
+tampilPaket();
+</script>
+
+</body>
+</html>
